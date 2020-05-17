@@ -34,6 +34,7 @@ from typing                                import Dict, List, Optional
 from filelock                              import FileLock
 from dataclasses                           import dataclass, field
 from sklearn.metrics                       import f1_score, recall_score, precision_score
+from sklearn.metrics                       import matthews_corrcoef
 from torch.utils.data.dataset              import Dataset
 
 
@@ -60,9 +61,11 @@ logger = logging.getLogger(__name__)
 def simple_accuracy(preds, labels):
     return (preds == labels).mean()
 def acc_and_f1(preds, labels):
-    acc =       simple_accuracy(preds, labels)
+    acc = simple_accuracy(preds, labels)
+    mcc = matthews_corrcoef(labels, preds) # labels and preds instead of other way!
     return_dict = { 
-         "acc" : acc
+        "acc" : acc,
+        "mcc" : mcc, 
     }
     for average in [ "binary", "micro", "macro", "weighted"] : 
         f1        = f1_score       (y_true=labels, y_pred=preds, average=average)
@@ -317,7 +320,10 @@ def main():
     if not model_args.class_weights is None :
         class_weights = model_args.class_weights.lstrip().rstrip().split( ',' )
         class_weights = [ float(i) for i in class_weights ]
-        class_weights = torch.tensor([1, 20], dtype=torch.float, device=training_args.device )
+        logger.info(
+            "Using Class Weights {}".format( ','.join( [ str(i) for i in class_weights ] ) )
+        )
+        class_weights = torch.tensor( class_weights, dtype=torch.float, device=training_args.device )
     model.set_class_weights( class_weights ) 
     #############################################################################
 
