@@ -42,7 +42,6 @@ from transformers                          import AutoConfig, AutoModelForSequen
 from transformers.tokenization_utils       import PreTrainedTokenizer
 from transformers.tokenization_roberta     import RobertaTokenizer, RobertaTokenizerFast
 from transformers.data.processors.glue     import glue_convert_examples_to_features
-from transformers.data.processors.glue     import glue_output_modes, glue_processors
 from transformers.data.processors.utils    import InputFeatures
 from transformers.data.processors.utils    import DataProcessor, InputExample, InputFeatures
 from transformers.tokenization_xlm_roberta import XLMRobertaTokenizer
@@ -51,13 +50,11 @@ from transformers import (
     HfArgumentParser,
     Trainer,
     TrainingArguments,
-    glue_compute_metrics,
-    glue_output_modes,
-    glue_tasks_num_labels,
     set_seed,
 )
 
 
+logger = logging.getLogger(__name__)
 
 ## From /src/transformers/data/metrics/__init__.py
 def simple_accuracy(preds, labels):
@@ -76,11 +73,8 @@ def acc_and_f1(preds, labels):
         return_dict[ "recall_"    + average ] = recall
     return return_dict
 
-
-
-logger = logging.getLogger(__name__)
-
-class ClassifierDataProcessor(DataProcessor):
+# ColaProcessor from src/transformers/data/processors/glue.py
+class Processor(DataProcessor):
     """Processor for the CoLA data set (GLUE version)."""
 
     def get_example_from_tensor_dict(self, tensor_dict):
@@ -115,7 +109,7 @@ class ClassifierDataProcessor(DataProcessor):
         return examples
 
 
-
+# GlueDataTrainingArguments from: src/transformers/data/datasets/glue.py
 @dataclass
 class DataTrainingArguments:
     """
@@ -126,7 +120,7 @@ class DataTrainingArguments:
     the command line.
     """
 
-    task_name: str = field(metadata={"help": "The name of the task to train on: " + ", "})
+    name: str = field(metadata={"help": "A name for this task (Cache folders will be based on this"})
     data_dir: str = field(
         metadata={"help": "The input data dir. Should contain the .tsv files (or other data files) for the task."}
     )
@@ -141,10 +135,8 @@ class DataTrainingArguments:
         default=False, metadata={"help": "Overwrite the cached training and evaluation sets"}
     )
 
-    def __post_init__(self):
-        self.task_name = self.task_name.lower()
-
-
+    
+# From: src/transformers/data/datasets/glue.py
 class GlueDataset(Dataset):
     """
     This will be superseded by a framework-agnostic approach
@@ -163,13 +155,13 @@ class GlueDataset(Dataset):
         evaluate=False,
     ):
         self.args = args
-        processor = DataProcessor
-        self.output_mode = glue_output_modes[args.task_name]
+        processor = Processor()
+        self.output_mode = 'classification'
         # Load data features from cache or dataset file
         cached_features_file = os.path.join(
             args.data_dir,
             "cached_{}_{}_{}_{}".format(
-                "dev" if evaluate else "train", tokenizer.__class__.__name__, str(args.max_seq_length), args.task_name,
+                "dev" if evaluate else "train", tokenizer.__class__.__name__, str(args.max_seq_length), args.name,
             ),
         )
 
@@ -187,13 +179,16 @@ class GlueDataset(Dataset):
             else:
                 logger.info(f"Creating features from dataset file at {args.data_dir}")
                 label_list = processor.get_labels()
-                if args.task_name in ["mnli", "mnli-mm"] and tokenizer.__class__ in (
-                    RobertaTokenizer,
-                    RobertaTokenizerFast,
-                    XLMRobertaTokenizer,
-                ):
-                    # HACK(label indices are swapped in RoBERTa pretrained model)
-                    label_list[1], label_list[2] = label_list[2], label_list[1]
+                
+                # if args.task_name in ["mnli", "mnli-mm"] and tokenizer.__class__ in (
+                #     RobertaTokenizer,
+                #     RobertaTokenizerFast,
+                #     XLMRobertaTokenizer,
+                # ):
+                #     # HACK(label indices are swapped in RoBERTa pretrained model)
+                #     label_list[1], label_list[2] = label_list[2], label_list[1]
+
+                    
                 examples = (
                     processor.get_dev_examples(args.data_dir)
                     if evaluate
@@ -206,13 +201,13 @@ class GlueDataset(Dataset):
                     tokenizer,
                     max_length=args.max_seq_length,
                     label_list=label_list,
-                    output_mode=self.output_mode,
+                    output_mode='classification', 
                 )
                 start = time.time()
                 torch.save(self.features, cached_features_file)
                 # ^ This seems to take a lot of time so I want to investigate why and how we can improve.
                 logger.info(
-                    f"Saving features into cached file %s [took %.3f s]", cached_features_file, time.time() - start
+                    "Saving features into cached file %s [took %.3f s]", cached_features_file, time.time() - start
                 )
 
     def __len__(self):
@@ -220,6 +215,7 @@ class GlueDataset(Dataset):
 
     def __getitem__(self, i) -> InputFeatures:
         return self.features[i]
+        
 
 @dataclass
 class ModelArguments:
@@ -240,15 +236,8 @@ class ModelArguments:
         default=None, metadata={"help": "Where do you want to store the pretrained models downloaded from s3"}
     )
     class_weights: Optional[str] = field(
-        default=None, metadata={"help": "Comma seperated list of class weights - number (and order) should match labels"}
+        default=None, metadata={"help": "Comma seperated list of class weights. Weight for Class 0, Weight for Class 1"}
     )
-    num_labels: Optional[int] = field(
-        default=2, metadata={"help": "How many output classes exist (default 2)"}
-    )
-    output_mode: Optional[str] = field(
-        default='classification', metadata={"help": "Output mode; classification or regression. (default classification ) "}
-    )
-    
 
 
 def main():
@@ -290,14 +279,12 @@ def main():
         training_args.fp16,
     )
     logger.info("Training/evaluation parameters %s", training_args)
-    logger.info("Model parameters %s", model_args )
-    logger.info("Data  parameters %s", data_args  )
 
     # Set seed
     set_seed(training_args.seed)
 
-    num_labels  = model_args.num_labels
-    output_mode = model_args.output_mode
+    num_labels  = 2 ## Defined in processor. Change labels before changing this (also hardcoded elsewhere) .
+    output_mode = 'classification'
 
     # Load pretrained model and tokenizer
     #
@@ -307,8 +294,8 @@ def main():
 
     config = AutoConfig.from_pretrained(
         model_args.config_name if model_args.config_name else model_args.model_name_or_path,
-        num_labels=num_labels,
-        finetuning_task=data_args.task_name,
+        num_labels=2, ## Defined in processor. Change labels before changing this (also hardcoded elsewhere) .
+        finetuning_task='cola', ## Not sure why we need this!
         cache_dir=model_args.cache_dir,
     )
     tokenizer = AutoTokenizer.from_pretrained(
@@ -322,6 +309,7 @@ def main():
         cache_dir=model_args.cache_dir,
     )
 
+
     #############################################################################
     #                            Set Class Weights                             ##
     #############################################################################
@@ -332,6 +320,7 @@ def main():
         class_weights = torch.tensor([1, 20], dtype=torch.float, device=training_args.device )
     model.set_class_weights( class_weights ) 
     #############################################################################
+
     
     # Get datasets
     train_dataset = GlueDataset(data_args, tokenizer=tokenizer) if training_args.do_train else None
@@ -343,13 +332,11 @@ def main():
         elif output_mode == "regression":
             preds = np.squeeze(p.predictions)
         # return glue_compute_metrics(data_args.task_name, preds, p.label_ids)
-        ## Write out preds
         with open( training_args.output_dir + 'predictions.csv', 'w' ) as fh:
             writer = csv.writer( fh )
             preds  = [ [i] for i in preds ]
             writer.writerows( preds ) 
         return acc_and_f1(preds, p.label_ids)
-        
 
     # Initialize our Trainer
     trainer = Trainer(
@@ -378,18 +365,18 @@ def main():
 
         # Loop to handle MNLI double evaluation (matched, mis-matched)
         eval_datasets = [eval_dataset]
-        if data_args.task_name == "mnli":
-            mnli_mm_data_args = dataclasses.replace(data_args, task_name="mnli-mm")
-            eval_datasets.append(GlueDataset(mnli_mm_data_args, tokenizer=tokenizer, evaluate=True))
+        # if data_args.task_name == "mnli":
+        #     mnli_mm_data_args = dataclasses.replace(data_args, task_name="mnli-mm")
+        #     eval_datasets.append(GlueDataset(mnli_mm_data_args, tokenizer=tokenizer, evaluate=True))
 
         for eval_dataset in eval_datasets:
             result = trainer.evaluate(eval_dataset=eval_dataset)
 
             output_eval_file = os.path.join(
-                training_args.output_dir, f"eval_results_{eval_dataset.args.task_name}.txt"
+                training_args.output_dir, f"eval_results_classification.txt"
             )
             with open(output_eval_file, "w") as writer:
-                logger.info("***** Eval results {} *****".format(eval_dataset.args.task_name))
+                logger.info("***** Eval results classification *****")
                 for key, value in result.items():
                     logger.info("  %s = %s", key, value)
                     writer.write("%s = %s\n" % (key, value))
