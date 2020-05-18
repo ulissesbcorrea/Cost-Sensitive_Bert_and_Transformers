@@ -6,6 +6,8 @@ More details are available in [our paper](https://www.aclweb.org/anthology/D19-5
 
 All PyTorch models (Albert, BERT, BART, ...) have been modified to handle class weights. TensorFlow implementations of models do not yet include class weights. 
 
+We found that cost weighting is especially useful when the training, development and test sets are dissimilar. We show that when training and test sets are dissimilar, cost weighting can be effective. **Training and test data are often dissimilar in social media and similar user generated datasets.** You can use the [script provided in utils](utils/Wilcoxon_Signed-rank_test_for_Corpus_similarity.py) to check the similarity of corpora. [This colab notebook](https://colab.research.google.com/drive/1j-hHzpjuY98FY8470oyJH9eajYV18Qan?usp=sharing) describes its usage. 
+
 We are in the process of adding this functionality for sequence to sequence models. 
 
 If you make use of this package, please [cite](https://github.com/H-TayyarMadabushi/Cost-Sensitive_Bert_and_Transformers#citation) our work
