@@ -1,4 +1,4 @@
-# A Cost Sensitive version of Transformers
+# A Cost Sensitive version of Transformers for Classification of Imbalanced Data
 
 This version of [🤗 Transformers](https://github.com/huggingface/transformers) adds on the ability to train models with associated cost weights for different classes for sequence classification. This has been shown to be an effective strategy when dealing with imbalanced classes, especially if the training and test sets are dissimilar. 
 
