@@ -15,6 +15,8 @@ This repo is tested on Python 3.6+, PyTorch 1.0.0+ and TensorFlow 2.0.
 
 **IMPORTANT: You must uninstall any previously installed version of transforms you might have. For this reason, it is best you use a virtual environment.**
 
+ ** IMPORTANT: You must uninstall any previously installed version of transforms you might have. For this reason, it is best you use a virtual environment. ** 
+
 Like Transformers, it is a good idea install this package in a [virtual environment](https://docs.python.org/3/library/venv.html). 
 
 First you need to install PyTorch. *Please note that the Tensorflow versions do not yet have cost weighting included.*
