@@ -13,7 +13,7 @@ We are in the process of adding this functionality for sequence to sequence mode
 
 This repo is tested on Python 3.6+, PyTorch 1.0.0+ and TensorFlow 2.0.
 
-** IMPORTANT: You must uninstall any previously installed version of transforms you might have. For this reason, it is best you use a virtual environment. **
+**IMPORTANT: You must uninstall any previously installed version of transforms you might have. For this reason, it is best you use a virtual environment. **
 
 
 Like Transformers, it is a good idea install this package in a [virtual environment](https://docs.python.org/3/library/venv.html). 
@@ -104,7 +104,7 @@ where task name can be one of CoLA, SST-2, MRPC, STS-B, QQP, MNLI, QNLI, RTE, WN
 
 The dev set results will be present within the text file 'eval_results.txt' in the specified output_dir. In case of MNLI, since there are two separate dev sets, matched and mismatched, there will be a separate output folder called '/tmp/MNLI-MM/' in addition to '/tmp/MNLI/'.
 
-** The actual weights to use is a hyperparameter and will depend on your task and dataset **
+**The actual weights to use is a hyperparameter and will depend on your task and dataset **
 
 ### CoLA Results
 
