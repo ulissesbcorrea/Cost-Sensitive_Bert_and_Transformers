@@ -39,8 +39,8 @@ pip install .
 
 We provide two example, one to run a generic classification task and the other a modified version of run_glue which ships with 🤗 Transformers. These files are: 
 
-1. examples/text-classification/run_classifier.py
-2. examples/text-classification/run_glue_class-weighted.py
+1. [examples/text-classification/run_classifier.py](https://github.com/H-TayyarMadabushi/Cost-Sensitive_Bert_and_Transformers/blob/master/examples/text-classification/run_classifier.py)
+2. [examples/text-classification/run_glue_class-weighted.py](https://github.com/H-TayyarMadabushi/Cost-Sensitive_Bert_and_Transformers/blob/master/examples/text-classification/run_glue_class-weighted.py)
 
 ### Running a classifier with cost weights
 
