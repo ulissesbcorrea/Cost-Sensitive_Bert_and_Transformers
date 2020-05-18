@@ -11,7 +11,7 @@ We are in the process of adding this functionality for sequence to sequence mode
 
 ## Installation
 
-This repo is tested on Python 3.6+, PyTorch 1.0.0+ and TensorFlow 2.0.
+This repo is tested on Python 3.6+ and PyTorch 1.0.0+.
 
 **IMPORTANT: You must uninstall any previously installed version of transforms you might have. For this reason, it is best you use a virtual environment.**
 
