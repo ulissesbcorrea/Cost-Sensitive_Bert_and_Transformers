@@ -13,9 +13,8 @@ We are in the process of adding this functionality for sequence to sequence mode
 
 This repo is tested on Python 3.6+, PyTorch 1.0.0+ and TensorFlow 2.0.
 
-**IMPORTANT: You must uninstall any previously installed version of transforms you might have. For this reason, it is best you use a virtual environment.**
+** IMPORTANT: You must uninstall any previously installed version of transforms you might have. For this reason, it is best you use a virtual environment. **
 
- ** IMPORTANT: You must uninstall any previously installed version of transforms you might have. For this reason, it is best you use a virtual environment. ** 
 
 Like Transformers, it is a good idea install this package in a [virtual environment](https://docs.python.org/3/library/venv.html). 
 
@@ -105,17 +104,45 @@ where task name can be one of CoLA, SST-2, MRPC, STS-B, QQP, MNLI, QNLI, RTE, WN
 
 The dev set results will be present within the text file 'eval_results.txt' in the specified output_dir. In case of MNLI, since there are two separate dev sets, matched and mismatched, there will be a separate output folder called '/tmp/MNLI-MM/' in addition to '/tmp/MNLI/'.
 
-**The actual weights to use is a hyperparameter and will depend on your task and dataset**
+** The actual weights to use is a hyperparameter and will depend on your task and dataset **
 
 ### CoLA Results
 
 Below are the results for CoLA with and without cost weighting (NOTE: Matthews Coefficient, MCC, is the official metric for this dataset): 
 
 
-                        |  MCC      | Accuracy | F1 macro
---------------------------------------------------------------
+Weighting               |  MCC      | Accuracy  | F1 macro
+----------------------- | --------- | --------- | --------
 No Cost Weight          | 0.5676    | 0.6132    | 0.7700
 With Cost Weight (20:1) | 0.5792    | 0.5845    | 0.7886
+
+
+These results were obtained using the following parameters: 
+
+```shell
+per_gpu_train_batch_size=32, per_gpu_eval_batch_size=8, gradient_accumulation_steps=1, learning_rate=2e-05, weight_decay=0.0, adam_epsilon=1e-08, max_grad_norm=1.0, num_train_epochs=3.0, max_steps=-1, warmup_steps=0, logging_dir=None, logging_first_step=False, logging_steps=500, save_steps=500, save_total_limit=None, no_cuda=False, seed=42, fp16=False, fp16_opt_level='O1', local_rank=-1, tpu_num_cores=None, tpu_metrics_debug=False
+
+bert-base-cased config: 
+Model config BertConfig {
+  "architectures": [
+    "BertForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "model_type": "bert",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "pad_token_id": 0,
+  "type_vocab_size": 2,
+  "vocab_size": 28996
+}
+```
 
 
 ## Model architectures
