@@ -567,6 +567,9 @@ class DistilBertForSequenceClassification(DistilBertPreTrainedModel):
 
         self.init_weights()
 
+    def set_class_weights( self, class_weights ) :
+        self.class_weights = class_weights
+            
     @add_start_docstrings_to_callable(DISTILBERT_INPUTS_DOCSTRING)
     def forward(self, input_ids=None, attention_mask=None, head_mask=None, inputs_embeds=None, labels=None):
         r"""
@@ -624,6 +627,15 @@ class DistilBertForSequenceClassification(DistilBertPreTrainedModel):
                 loss = loss_fct(logits.view(-1), labels.view(-1))
             else:
                 loss_fct = nn.CrossEntropyLoss()
+
+                class_weights = None
+                try :
+                    class_weights = self.class_weights
+                except AttributeError :
+                    pass
+                if not class_weights is None:
+                    loss_fct = CrossEntropyLoss( weight=class_weights )
+                    
                 loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
             outputs = (loss,) + outputs
 

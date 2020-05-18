@@ -1037,6 +1037,9 @@ class BartForSequenceClassification(PretrainedBartModel):
         self.model._init_weights(self.classification_head.dense)
         self.model._init_weights(self.classification_head.out_proj)
 
+    def set_class_weights( self, class_weights ) :
+        self.class_weights = class_weights
+            
     @add_start_docstrings_to_callable(BART_INPUTS_DOCSTRING)
     def forward(
         self,
@@ -1099,7 +1102,16 @@ class BartForSequenceClassification(PretrainedBartModel):
         # Prepend logits
         outputs = (logits,) + outputs[1:]  # Add hidden states and attention if they are here
         if labels is not None:  # prepend loss to output,
-            loss = F.cross_entropy(logits.view(-1, self.config.num_labels), labels.view(-1))
+            loss = None
+            class_weights = None
+            try :
+                class_weights = self.class_weights
+            except AttributeError :
+                pass
+            if class_weights is None:
+                loss = F.cross_entropy(logits.view(-1, self.config.num_labels), labels.view(-1))
+            else : 
+                loss = F.cross_entropy(logits.view(-1, self.config.num_labels), labels.view(-1), weight=class_weights)
             outputs = (loss,) + outputs
 
         return outputs

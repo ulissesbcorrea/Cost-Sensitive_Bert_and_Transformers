@@ -819,6 +819,9 @@ class AlbertForSequenceClassification(AlbertPreTrainedModel):
 
         self.init_weights()
 
+    def set_class_weights( self, class_weights ) :
+        self.class_weights = class_weights
+
     @add_start_docstrings_to_callable(ALBERT_INPUTS_DOCSTRING)
     def forward(
         self,
@@ -892,6 +895,13 @@ class AlbertForSequenceClassification(AlbertPreTrainedModel):
                 loss = loss_fct(logits.view(-1), labels.view(-1))
             else:
                 loss_fct = CrossEntropyLoss()
+                class_weights = None
+                try :
+                    class_weights = self.class_weights
+                except AttributeError :
+                    pass
+                if not class_weights is None:
+                    loss_fct = CrossEntropyLoss( weight=class_weights )
                 loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
             outputs = (loss,) + outputs
 
