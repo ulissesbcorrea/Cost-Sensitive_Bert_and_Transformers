@@ -13,7 +13,7 @@ We are in the process of adding this functionality for sequence to sequence mode
 
 This repo is tested on Python 3.6+ and PyTorch 1.0.0+.
 
-**IMPORTANT: You must uninstall any previously installed version of transforms you might have. For this reason, it is best you use a virtual environment.**
+**![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) _IMPORTANT_: You must uninstall any previously installed version of transforms you might have. For this reason, it is best you use a virtual environment.**
 
 
 Like Transformers, it is a good idea install this package in a [virtual environment](https://docs.python.org/3/library/venv.html). 
@@ -104,7 +104,7 @@ where task name can be one of CoLA, SST-2, MRPC, STS-B, QQP, MNLI, QNLI, RTE, WN
 
 The dev set results will be present within the text file 'eval_results.txt' in the specified output_dir. In case of MNLI, since there are two separate dev sets, matched and mismatched, there will be a separate output folder called '/tmp/MNLI-MM/' in addition to '/tmp/MNLI/'.
 
-**The actual weights to use is a hyperparameter and will depend on your task and dataset**
+**![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) The actual weights to use is a hyperparameter and will depend on your task and dataset**
 
 ### CoLA Results
 
@@ -144,6 +144,7 @@ Model config BertConfig {
 }
 ```
 
+**![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) The same weights are unlikely to work for other pre-trained models.**
 
 ## Model architectures
 
@@ -176,7 +177,7 @@ While we are constantly adding to this list, this package provides the following
 
 Cost weighting involves increasing the cost associated with getting a low frequency class label wrong. It is an important alternative to data augmentation for imbalanced classes. 
 
-**We found setting the weights to 1, 20 to be most effective, but also 1, 4 and so on. This is a hyperparameter.**
+**![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) We found setting the weights to 1, 20 to be most effective, but also 1, 4 and so on. This is a hyperparameter.**
 
 While the changes themselves are relatively straightforward, incorporating them into pre-trained models like BERT tends to be fairly complicated due to the high level of abstraction. 
 In essence, class weights need to be passed to the cost function. Below is how this is typically done within the training loop: 
