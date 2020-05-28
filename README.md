@@ -11,20 +11,20 @@ If you make use of this package, please [cite](https://github.com/H-TayyarMadabu
 ## Table of Contents
 
 -[Installation](##Installation)
-  * [With pip](###With pip)
-  *  [From source](###From source)
+  * [With pip](###With%20pip)
+  *  [From source](###From%20source)
 - [Examples](##Examples)
-- [Propaganda detection](##Propaganda detection)
-- [Corpus Similarity testing](##Wilcoxon Signed-rank test for Corpus Similarity)
-- [Running a classifier with cost weights](###Running a classifier with cost weights)
-- [Model architectures](##Model architectures)
-- [More details on 🤗 Transformers](##More details on 🤗 Transformers)
-- [What is cost weighting](##What is cost weighting)
+- [Propaganda detection](##Propaganda%20detection)
+- [Corpus Similarity testing](##Wilcoxon%20Signed-rank%20test%20for%20Corpus%20Similarity)
+- [Running a classifier with cost weights](###Running%20a%20classifier%20with%20cost%20weights)
+- [Model architectures](##Model%20architectures)
+- [More details on 🤗 Transformers](##More%20details%20on%20🤗%20Transformers)
+- [What is cost weighting](##What%20is%20cost%20weighting)
 - [Citation](##Citation)
     
 <!-- toc -->
 
-## Installation
+##Installation
 
 This repo is tested on Python 3.6+ and PyTorch 1.0.0+.
 
