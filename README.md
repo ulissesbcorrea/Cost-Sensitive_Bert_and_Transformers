@@ -2,11 +2,7 @@
 
 This version of [🤗 Transformers](https://github.com/huggingface/transformers) adds on the ability to train models with associated cost weights for different classes for sequence classification. This has been shown to be an effective strategy when dealing with imbalanced classes, especially if the training and test sets are dissimilar. 
 
-More details are available in [our paper](https://www.aclweb.org/anthology/D19-5018/) which describes our system (ProperGander) that achieved 2nd rank in [The Shared Task on Fine-Grained Propaganda Detection for the 2nd Workshop on NLP for Internet Freedom](https://propaganda.qcri.org/nlp4if-shared-task/leaderboard.php).
-
-All PyTorch models (Albert, BERT, BART, ...) have been modified to handle class weights. TensorFlow implementations of models do not yet include class weights. 
-
-We found that cost weighting is especially useful when the training, development and test sets are dissimilar. We show that when training and test sets are dissimilar, cost weighting can be effective. **Training and test data are often dissimilar in social media and similar user generated datasets.** You can use the [script provided in utils](utils/Wilcoxon_Signed-rank_test_for_Corpus_similarity.py) to check the similarity of corpora. [This colab notebook](https://colab.research.google.com/drive/1j-hHzpjuY98FY8470oyJH9eajYV18Qan?usp=sharing) describes its usage. 
+All PyTorch models (Albert, BERT, BART, ...) have been modified to handle class weights. TensorFlow implementations of models do not yet include class weights.  
 
 We are in the process of adding this functionality for sequence to sequence models. 
 
@@ -44,6 +40,14 @@ We provide two example, one to run a generic classification task and the other a
 
 1. [examples/text-classification/run_classifier.py](https://github.com/H-TayyarMadabushi/Cost-Sensitive_Bert_and_Transformers/blob/master/examples/text-classification/run_classifier.py)
 2. [examples/text-classification/run_glue_class-weighted.py](https://github.com/H-TayyarMadabushi/Cost-Sensitive_Bert_and_Transformers/blob/master/examples/text-classification/run_glue_class-weighted.py)
+
+## Propaganda detection
+
+More details are available in [our paper](https://www.aclweb.org/anthology/D19-5018/) which describes our system (ProperGander) that achieved **2nd rank** in [The Shared Task on Fine-Grained Propaganda Detection for the 2nd Workshop on NLP for Internet Freedom](https://propaganda.qcri.org/nlp4if-shared-task/leaderboard.php).
+
+## Wilcoxon Signed-rank test for Corpus Similarity
+
+We found that cost weighting is especially useful when the training, development and test sets are dissimilar. We show that when training and test sets are dissimilar, cost weighting can be effective. **Training and test data are often dissimilar in social media and similar user generated datasets.** You can use the [script provided in utils](utils/Wilcoxon_Signed-rank_test_for_Corpus_similarity.py) to check the similarity of corpora. [This colab notebook](https://colab.research.google.com/drive/1j-hHzpjuY98FY8470oyJH9eajYV18Qan?usp=sharing) describes its usage.
 
 ### Running a classifier with cost weights
 
