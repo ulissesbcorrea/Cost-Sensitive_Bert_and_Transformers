@@ -10,7 +10,7 @@ If you make use of this package, please [cite](https://github.com/H-TayyarMadabu
 
 ## Table of Contents
 
-- [Installation](##Installation)
+- [Installation](#Installation)
   * [With pip](###With%20pip)
   * [From source](###From%20source)
 - [Examples](##Examples)
