@@ -8,6 +8,25 @@ We are in the process of adding this functionality for sequence to sequence mode
 
 If you make use of this package, please [cite](https://github.com/H-TayyarMadabushi/Cost-Sensitive_Bert_and_Transformers#citation) our work
 
+## Table of Contents
+
+- [Installation](## Installation)
+  * [With pip](### With pip)
+  *  [From source](### From source)
+- [Examples](## Examples)
+- [Propaganda detection](## Propaganda detection)
+- [Corpus Similarity testing](## Wilcoxon Signed-rank test for Corpus Similarity)
+- [Running a classifier with cost weights](### Running a classifier with cost weights)
+- [Model architectures](## Model architectures)
+- [More details on 🤗 Transformers](## More details on 🤗 Transformers)
+- [What is cost weighting](## What is cost weighting)
+- [Citation](## Citation).
+
+
+
+  * [Sub-heading](#sub-heading-2)
+    + [Sub-sub-heading](#sub-sub-heading-2)
+
 ## Installation
 
 This repo is tested on Python 3.6+ and PyTorch 1.0.0+.
