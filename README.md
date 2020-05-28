@@ -14,12 +14,12 @@ If you make use of this package, please [cite](https://github.com/H-TayyarMadabu
   * [With pip](#With-pip)
   * [From source](#From-source)
 - [Examples](#Examples)
-- [Propaganda detection](#Propaganda%20detection)
-- [Corpus Similarity testing](#Wilcoxon%20Signed-rank%20test%20for%20Corpus%20Similarity)
-- [Running a classifier with cost weights](#Running%20a%20classifier%20with%20cost%20weights)
-- [Model architectures](#Model%20architectures)
-- [More details on 🤗 Transformers](#More%20details%20on%20🤗%20Transformers)
-- [What is cost weighting](#What%20is%20cost%20weighting)
+- [Propaganda detection](#Propaganda-detection)
+- [Corpus Similarity testing](#Wilcoxon-Signed-rank-test-for-Corpus-Similarity)
+- [Running a classifier with cost weights](#Running-a-classifier-with-cost-weights)
+- [Model architectures](#Model-architectures)
+- [More details on 🤗 Transformers](#More-details-on-🤗-Transformers)
+- [What is cost weighting](#What-is-cost-weighting)
 - [Citation](#Citation)
     
 <!-- toc -->
