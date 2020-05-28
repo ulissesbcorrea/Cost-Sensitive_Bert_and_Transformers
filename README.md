@@ -43,7 +43,10 @@ We provide two example, one to run a generic classification task and the other a
 
 ## Propaganda detection
 
-More details are available in [our paper](https://www.aclweb.org/anthology/D19-5018/) which describes our system (ProperGander) that achieved **2nd rank** in [The Shared Task on Fine-Grained Propaganda Detection for the 2nd Workshop on NLP for Internet Freedom](https://propaganda.qcri.org/nlp4if-shared-task/leaderboard.php).
+We have used Cost Sensitive Transformers for Sentence-Level Propaganda Detection task and achieved **2nd rank** in [The Shared Task on Fine-Grained Propaganda Detection for the 2nd Workshop on NLP for Internet Freedom](https://propaganda.qcri.org/nlp4if-shared-task/leaderboard.php). The code can be found 
+[in this Colab notebook](https://colab.research.google.com/drive/18t8WVBwYycyEbM02V-5LZLaqED8sdXBP?usp=sharing). 
+
+More details are available in [our paper](https://www.aclweb.org/anthology/D19-5018/) which describes our system (ProperGander). 
 
 ## Wilcoxon Signed-rank test for Corpus Similarity
 
