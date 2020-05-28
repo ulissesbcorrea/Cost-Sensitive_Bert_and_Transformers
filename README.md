@@ -10,9 +10,9 @@ If you make use of this package, please [cite](https://github.com/H-TayyarMadabu
 
 ## Table of Contents
 
--[Installation](##Installation)
+- [Installation](##Installation)
   * [With pip](###With%20pip)
-  * [From source](###From%20source)
+    + [From source](###From%20source)
 - [Examples](##Examples)
 - [Propaganda detection](##Propaganda%20detection)
 - [Corpus Similarity testing](##Wilcoxon%20Signed-rank%20test%20for%20Corpus%20Similarity)
