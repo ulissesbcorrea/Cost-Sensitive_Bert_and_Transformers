@@ -10,7 +10,7 @@ If you make use of this package, please [cite](https://github.com/H-TayyarMadabu
 
 ## Table of Contents
 
-- [Installation](## Installation)
+-[Installation](## Installation)
   * [With pip](### With pip)
   *  [From source](### From source)
 - [Examples](## Examples)
@@ -20,12 +20,12 @@ If you make use of this package, please [cite](https://github.com/H-TayyarMadabu
 - [Model architectures](## Model architectures)
 - [More details on 🤗 Transformers](## More details on 🤗 Transformers)
 - [What is cost weighting](## What is cost weighting)
-- [Citation](## Citation).
-
-
+- [Citation](## Citation)
 
   * [Sub-heading](#sub-heading-2)
     + [Sub-sub-heading](#sub-sub-heading-2)
+    
+<!-- toc -->
 
 ## Installation
 
