@@ -10,20 +10,17 @@ If you make use of this package, please [cite](https://github.com/H-TayyarMadabu
 
 ## Table of Contents
 
--[Installation](## Installation)
-  * [With pip](### With pip)
-  *  [From source](### From source)
-- [Examples](## Examples)
-- [Propaganda detection](## Propaganda detection)
-- [Corpus Similarity testing](## Wilcoxon Signed-rank test for Corpus Similarity)
-- [Running a classifier with cost weights](### Running a classifier with cost weights)
-- [Model architectures](## Model architectures)
-- [More details on 🤗 Transformers](## More details on 🤗 Transformers)
-- [What is cost weighting](## What is cost weighting)
-- [Citation](## Citation)
-
-  * [Sub-heading](#sub-heading-2)
-    + [Sub-sub-heading](#sub-sub-heading-2)
+-[Installation](##Installation)
+  * [With pip](###With pip)
+  *  [From source](###From source)
+- [Examples](##Examples)
+- [Propaganda detection](##Propaganda detection)
+- [Corpus Similarity testing](##Wilcoxon Signed-rank test for Corpus Similarity)
+- [Running a classifier with cost weights](###Running a classifier with cost weights)
+- [Model architectures](##Model architectures)
+- [More details on 🤗 Transformers](##More details on 🤗 Transformers)
+- [What is cost weighting](##What is cost weighting)
+- [Citation](##Citation)
     
 <!-- toc -->
 
