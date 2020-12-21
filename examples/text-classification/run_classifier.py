@@ -67,7 +67,8 @@ def acc_and_f1(preds, labels):
         "acc" : acc,
         "mcc" : mcc, 
     }
-    for average in [ "binary", "micro", "macro", "weighted"] : 
+    for average in [ "binary", "micro", "macro", "weighted"] : # AE
+    # for average in ["micro", "macro", "weighted"] : # SA (qualquer coisa com mais de 2 labels)
         f1        = f1_score       (y_true=labels, y_pred=preds, average=average)
         precision = precision_score(y_true=labels, y_pred=preds, average=average)
         recall    = recall_score   (y_true=labels, y_pred=preds, average=average)
@@ -96,12 +97,16 @@ class Processor(DataProcessor):
     def get_dev_examples(self, data_dir):
         """See base class."""
         return self._create_examples(self._read_tsv(os.path.join(data_dir, "dev.tsv")), "dev")
+    
+    def get_test_examples(self, data_dir):
+        return self._create_examples(self._read_tsv(os.path.join(data_dir, "test.tsv")), "test")
 
     def get_labels(self):
         """See base class."""
-        return ["0", "1"]
+        return ["False", "True"]
+        # return ["negative", "neutral", "positive"]
 
-    def _create_examples(self, lines, set_type):
+    '''def _create_examples(self, lines, set_type):
         """Creates examples for the training and dev sets."""
         examples = []
         for (i, line) in enumerate(lines):
@@ -109,6 +114,20 @@ class Processor(DataProcessor):
             text_a = line[3]
             label = line[1]
             examples.append(InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
+        return examples
+    '''
+    def _create_examples(self, lines, set_type):
+        """Creates examples for the training and dev sets."""
+        examples = []
+        for (i, line) in enumerate(lines):
+            guid = "%s-%s" % (set_type, i)
+            text_a = line[3]
+            text_b = line[4]
+            if set_type == "test":
+                label = "False"
+            else:
+                label = line[0]
+            examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
         return examples
 
 
@@ -156,6 +175,7 @@ class GlueDataset(Dataset):
         tokenizer: PreTrainedTokenizer,
         limit_length: Optional[int] = None,
         evaluate=False,
+        train=False,
     ):
         self.args = args
         processor = Processor()
@@ -164,7 +184,7 @@ class GlueDataset(Dataset):
         cached_features_file = os.path.join(
             args.data_dir,
             "cached_{}_{}_{}_{}".format(
-                "dev" if evaluate else "train", tokenizer.__class__.__name__, str(args.max_seq_length), args.name,
+                "train" if train else "dev", tokenizer.__class__.__name__, str(args.max_seq_length), args.name,
             ),
         )
 
@@ -196,6 +216,8 @@ class GlueDataset(Dataset):
                     processor.get_dev_examples(args.data_dir)
                     if evaluate
                     else processor.get_train_examples(args.data_dir)
+                    if train
+                    else processor.get_test_examples(args.data_dir)
                 )
                 if limit_length is not None:
                     examples = examples[:limit_length]
@@ -287,7 +309,7 @@ def main():
     set_seed(training_args.seed)
 
     num_labels  = 2 ## Defined in processor. Change labels before changing this (also hardcoded elsewhere) .
-    output_mode = 'classification'
+    output_mode = 'regression'
 
     # Load pretrained model and tokenizer
     #
@@ -297,8 +319,8 @@ def main():
 
     config = AutoConfig.from_pretrained(
         model_args.config_name if model_args.config_name else model_args.model_name_or_path,
-        num_labels=2, ## Defined in processor. Change labels before changing this (also hardcoded elsewhere) .
-        finetuning_task='cola', ## Not sure why we need this!
+        num_labels=2, ## Defined in processor. Change labels before changing this (also hardcoded elsewhere) . # DEFAULT = 2
+        finetuning_task='mrpc', ## Not sure why we need this! # DEFAULT = cola
         cache_dir=model_args.cache_dir,
     )
     tokenizer = AutoTokenizer.from_pretrained(
@@ -329,8 +351,13 @@ def main():
 
     
     # Get datasets
-    train_dataset = GlueDataset(data_args, tokenizer=tokenizer) if training_args.do_train else None
+    train_dataset = GlueDataset(data_args, tokenizer=tokenizer, train=True) if training_args.do_train else None
     eval_dataset = GlueDataset(data_args, tokenizer=tokenizer, evaluate=True) if training_args.do_eval else None
+    test_dataset = GlueDataset(data_args, tokenizer=tokenizer) if training_args.do_predict else None
+
+    if test_dataset is not None:
+        for dataset in test_dataset:
+            logger.info(dataset)
 
     def compute_metrics(p: EvalPrediction) -> Dict:
         if output_mode == "classification":
@@ -388,6 +415,22 @@ def main():
                     writer.write("%s = %s\n" % (key, value))
 
             results.update(result)
+        
+    
+    # Prediction
+    if training_args.do_predict:
+        logger.info("*** Predict ***")
+
+        result = trainer.predict(test_dataset=test_dataset)
+
+        output_predict_file = os.path.join(
+            training_args.output_dir, f"predict_results.txt"
+            )
+        with open(output_predict_file, "w") as writer:
+            logger.info("***** Predict results classification ******")
+            logger.info(" %s = %s", result)
+            for key, value in result:
+                writer.write("%s, %s\n" % (key, value))
 
     return results
 
