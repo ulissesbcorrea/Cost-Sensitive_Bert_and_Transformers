@@ -47,6 +47,8 @@ from transformers.data.processors.utils    import InputFeatures
 from transformers.data.processors.utils    import DataProcessor, InputExample, InputFeatures
 from transformers.tokenization_xlm_roberta import XLMRobertaTokenizer
 
+from sklearn.metrics import accuracy_score, f1_score, balanced_accuracy_score, precision_score, recall_score, auc
+
 from transformers import (
     HfArgumentParser,
     Trainer,
@@ -59,12 +61,22 @@ logger = logging.getLogger(__name__)
 
 ## From /src/transformers/data/metrics/__init__.py
 def simple_accuracy(preds, labels):
-    return (preds == labels).mean()
+    preds = [x[0].argmax() for x in preds]
+    print(f'preds:{preds}\nlabels:{labels}')
+    # return (preds == labels).mean()
+    return accuracy_score(y_true=labels, y_pred=preds)
+
 def acc_and_f1(preds, labels):
-    acc = simple_accuracy(preds, labels)
+    preds = [x[0].argmax() for x in preds]
+    # acc = simple_accuracy(preds, labels)
+    acc = accuracy_score(y_true=labels, y_pred=preds)
+    
+    bacc = balanced_accuracy_score(y_true=labels, y_pred=preds)
+    
     mcc = matthews_corrcoef(labels, preds) # labels and preds instead of other way!
     return_dict = { 
         "acc" : acc,
+        "bacc": bacc,
         "mcc" : mcc, 
     }
     for average in [ "binary", "micro", "macro", "weighted"] : # AE
@@ -416,6 +428,7 @@ def main():
 
             results.update(result)
         
+    
     
     # Prediction
     if training_args.do_predict:
